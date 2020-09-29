@@ -18,6 +18,7 @@ const schema = buildSchema(`
     }
     type Mutation{
       addCourse(title: String!, views: Int): Course
+      updateCourse(id: ID!, title: String!, views: Int): Course
     }
 `);
 
@@ -34,6 +35,17 @@ const root = {
     const course = { id, title, views }; // se puede poner sin : ya que tiene el mismo nombre que la prop
     courses.push(course);
     return course;
+  },
+  updateCourse({ id, title, views }) {
+    // buscamos el curso que queremos modificar
+    const courseIndex = courses.findIndex((course) => id === course.id);
+    const course = courses[courseIndex];
+    // reemplaza los valores inciales del objeto que está actualizando
+    const newCourse = Object.assign(course, { title, views });
+    // guardamos en el arrya el nuevo para sustituir el viejo
+    course[courseIndex] = newCourse;
+
+    return newCourse;
   },
 };
 
