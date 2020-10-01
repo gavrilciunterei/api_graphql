@@ -1,4 +1,5 @@
 const Course = require('../models/course');
+const User = require('../models/user');
 
 module.exports = {
   Query: {
@@ -15,9 +16,11 @@ module.exports = {
     },
   },
   Mutation: {
-    async addCourse(obj, { input }) {
-      const course = new Course(input);
+    async addCourse(obj, { input, user }) {
+      const userObject = await User.findById(user);
+      const course = new Course({ ...input, user });
       await course.save();
+      await userObject.courses.push(course);
       return course;
     },
     async updateCourse(obj, { id, input }) {
