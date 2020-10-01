@@ -2,15 +2,13 @@ const Course = require('../models/course');
 
 module.exports = {
   Query: {
-    getCourses(obj, { page, limit }) {
-      if (page != undefined) {
-        return courses.slice(page * limit, (page + 1) * limit);
-      }
+    async getCourses(obj, { page, limit }) {
+      const courses = await Course.find();
       return courses;
     },
-    getCourse(obj, { id }) {
-      console.log(id);
-      return courses.find((course) => id == course.id);
+    async getCourse(obj, { id }) {
+      const course = await Course.findById(id);
+      return course;
     },
   },
   Mutation: {
@@ -19,20 +17,13 @@ module.exports = {
       await course.save();
       return course;
     },
-    updateCourse(obj, { id, input }) {
-      // buscamos el curso que queremos modificar
-      const courseIndex = courses.findIndex((course) => id === course.id);
-      const course = courses[courseIndex];
-      // reemplaza los valores inciales del objeto que está actualizando
-      const newCourse = Object.assign(course, { input });
-      // guardamos en el arrya el nuevo para sustituir el viejo
-      course[courseIndex] = newCourse;
-
-      return newCourse;
+    async updateCourse(obj, { id, input }) {
+      const course = await Course.findByIdAndUpdate(id, input);
+      return course;
     },
 
-    deleteCourse(obj, { id }) {
-      courses = courses.filter((course) => course.id != id);
+    async deleteCourse(obj, { id }) {
+      await Course.findByIdAndDelete(id);
       return {
         message: `El curso con id ${id} fue eliminado`,
       };
