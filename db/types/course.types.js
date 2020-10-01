@@ -10,7 +10,7 @@ module.exports = `
   }
 
   extend type Query{
-    getCourses(page: Int, limit: Int = 1) : [Course]
+    getCourses(page: Int, limit: Int = 3) : [Course]
     getCourse(id: ID!): Course
   }
   extend type Mutation{
