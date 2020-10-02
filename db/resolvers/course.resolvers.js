@@ -20,7 +20,8 @@ module.exports = {
       const userObject = await User.findById(user);
       const course = new Course({ ...input, user });
       await course.save();
-      await userObject.courses.push(course);
+      userObject.courses.push(course);
+      await userObject.save();
       return course;
     },
     async updateCourse(obj, { id, input }) {
@@ -33,6 +34,12 @@ module.exports = {
       return {
         message: `El curso con id ${id} fue eliminado`,
       };
+    },
+  },
+  // rellena el campo user si este es pedido
+  Course: {
+    async user(c) {
+      return await User.findById(c.user);
     },
   },
 };

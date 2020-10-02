@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Course = require('../models/course');
 
 module.exports = {
   Query: {
@@ -14,6 +15,12 @@ module.exports = {
       const user = new User(input);
       await user.save();
       return user;
+    },
+  },
+  User: {
+    //u es el padre
+    async courses(u) {
+      return await Course.find({ user: u.id });
     },
   },
 };
