@@ -1,9 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 
-const { graphqlExpress, graphiqlExpress } = require('graphql-server-express');
-const { makeExecutableSchema } = require('graphql-tools');
+const { ApolloServer } = require('apollo-server-express');
 
 const { merge } = require('lodash');
 
@@ -37,14 +35,13 @@ const typeDefs = `
 
 const resolver = {};
 
-const schema = makeExecutableSchema({
+const server = new ApolloServer({
   typeDefs: [typeDefs, courseTypeDefs, userTypeDefs],
   resolvers: merge(resolver, courseResolvers, userResolvers),
 });
 
 //use permite usar midddlewares
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema: schema }));
-app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+server.applyMiddleware({ app });
 
 app.listen(8080, function () {
   console.log('Servidor iniciado');
