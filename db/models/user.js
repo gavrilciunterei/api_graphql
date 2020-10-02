@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secret = require('../libs/env').secret;
 
 const userSchema = new mongoose.Schema({
   email: String,
@@ -37,6 +39,8 @@ userSchema.statics.authenticate = async function ({ email, password }) {
   if (!result) throw new Error('Email or password wrong');
 
   //JSON Web tockens
+  user.token = jwt.sign({ id: user.id }, secret);
+  await user.save();
 
   return user;
 };
