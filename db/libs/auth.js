@@ -16,6 +16,11 @@ module.exports = async function ({ req }) {
     if (!currentUser) throw new Error('Invalid token');
   }
 
+  //para todas las operaciones
+  if (!currentUser) {
+    throw new Error('Needs token');
+  }
+
   return {
     token,
     currentUser,

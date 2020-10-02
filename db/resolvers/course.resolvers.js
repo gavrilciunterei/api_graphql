@@ -17,7 +17,10 @@ module.exports = {
     },
   },
   Mutation: {
-    async addCourse(obj, { input, user }) {
+    async addCourse(obj, { input, user }, context) {
+      //Validacion operacion por operacion, neceista token
+      if (!context || context.currentUser) return null;
+
       const userObject = await User.findById(user);
       const course = new Course({ ...input, user });
       await course.save();
