@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+//signUp
 userSchema.virtual('password');
 userSchema.pre('validate', async function () {
   if (this.password === undefined) return;
@@ -26,5 +27,18 @@ userSchema.pre('validate', async function () {
     throw err;
   }
 });
+
+//logIn
+userSchema.statics.authenticate = async function ({ email, password }) {
+  const user = await this.findOne({ email });
+  if (!user) throw new Error('Email or password wrong');
+
+  const result = await bcrypt.compare(password, user.hashedPassword);
+  if (!result) throw new Error('Email or password wrong');
+
+  //JSON Web tockens
+
+  return user;
+};
 
 module.exports = mongoose.model('User', userSchema);
